@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Submission</title>
+    <script>
+        function handleSubmit(event) {
+  event.preventDefault(); // Prevent default form submission
+
+ debugger;
+  // Collect the form data
+  const formData = new FormData(event.currentTarget);
+  formData.append("sheet", event.currentTarget.dataset.sheet);
+  formData.append("template", event.currentTarget.dataset.template);
+  const body = JSON.stringify(Object.fromEntries(formData));
+  // document.getElementById("slot").disabled = true;
+
+  fetch(
+    "https://script.google.com/macros/s/AKfycbxdPIB01_w4mLU-8-Ukg_49McFODIoJiRuesIP63THiCyIXGP4ECYiGcyev_U4rpA/exec",
+    {
+      // @byjus account
+      method: "POST",
+      body,
+    }
+  )
+    .then(function (response) {
+      // Check if the request was successful
+      if (!response.ok) {
+        throw new Error("Failed to submit the form." + response.status);
+      }
+      return response.json(); // Assuming your script returns JSON response
+    })
+    .then(function (data) {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+   
+    })
+    .catch(function (error) {
+      alert(
+        "There is some error in submitting now, please try again after sometime." +
+          `\nERR: ${error}`
+      );
+      console.error("Error:", JSON.stringify(error, null, 2));
+    })
+    .finally(function () {});
+}
+
+
+    </script>
+</head>
+<body>
+    <form onsubmit="handleSubmit(event)" data-sheet="test" data-template="test Email">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
